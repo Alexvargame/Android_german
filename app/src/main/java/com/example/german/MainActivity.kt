@@ -45,6 +45,7 @@ import android.app.Activity
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TestDb(this).testBookDao()
         val hours = 18
         val greetingText = if (getCurrentHour() < hours) {
             "Добрый день"
@@ -81,6 +82,8 @@ fun MyApp(navController: NavController, greetingText: String) {
     //var text_reg by remember { mutableStateOf(value = "Зарегистрироваться") }
     //var text_by by remember { mutableStateOf(value = "Очень жаль") }
     // -------------------------
+
+
     androidx.compose.material3.MaterialTheme {  // ← ДОБАВЛЕНО
         Column(
             modifier = Modifier                   // ← ИСПРАВЛЕНО: заменено на импортированный Modifier

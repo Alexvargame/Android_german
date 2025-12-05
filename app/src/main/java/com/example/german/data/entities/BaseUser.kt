@@ -21,7 +21,7 @@ import java.util.*
         Index(value = ["email"], unique = true)
     ]
 )
-data class UserEntity(
+data class BaseUser(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val password: String,
     val last_login: Long?, // хранить как timestamp
