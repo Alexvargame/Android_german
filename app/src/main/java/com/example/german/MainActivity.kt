@@ -5,6 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 //import androidx.activity.enableEdgeToEdge
@@ -39,16 +41,22 @@ import androidx.compose.ui.platform.LocalContext
 import android.app.Activity
 import android.util.Log
 
+//import com.example.german.navigation.MyNavGraph
+
+
 import com.example.german.data.ui.registration.RegistrationViewModel
 import com.example.german.data.repository.UserRegistrationRepository
 import com.example.german.data.repository.RegistrationViewModelFactory
 import com.example.german.data.ui.autorization.AutorizationViewModel
+import com.example.german.data.ui.exercises.ExercisesViewModel
 import com.example.german.data.repository.autorization.AutorizationViewModelFactory
 import com.example.german.data.repository.exercises.ExercisesViewModelFactory
-import com.example.german.data.ui.exercises.ExercisesViewModel
+import com.example.german.data.ui.user_profile.UserProfileViewModel
 import com.example.german.data.AppDatabase
+
 import com.example.german.ui.screens.Registration_screen
 import com.example.german.ui.screens.Start_app_screen
+import com.example.german.ui.screens.User_profile_screen
 import com.example.german.ui.screens.Exercises_screen
 
 
@@ -68,11 +76,16 @@ class MainActivity : ComponentActivity() {
         } else {
             "Добрый вечер"
         }
-        //enableEdgeToEdge()      // включаем Edge-to-edge
-        // setContent запускает Composable функцию на экране
-        // добавлено MyApp() вместо обычного setContentView(R.layout.activity_main)
+        /*setContent {
+            val navController = rememberNavController()
+            MyNavGraph(navController) // ← здесь подключается твой AppNavigation.kt
+        }*/
         setContent {
             val navController = rememberNavController()
+            val backStackEntry by navController.currentBackStackEntryAsState()
+
+            val userProfileViewModel: UserProfileViewModel = viewModel()   // Пробуем создать профиль для всех экранов
+
             NavHost(
                 navController = navController,
                 startDestination = "home"
@@ -82,9 +95,10 @@ class MainActivity : ComponentActivity() {
                     val context = LocalContext.current
                     val db = AppDatabase.getInstance(context)
                     val factory = AutorizationViewModelFactory(db)
-                    val autorizationViewModel: AutorizationViewModel =
+                    val autoviewModel: AutorizationViewModel =
                         viewModel(factory = factory)
-                    Start_app_screen(autorizationViewModel, navController) }
+                    //val userviewModel: UserProfileViewModel = viewModel()
+                    Start_app_screen(userProfileViewModel, autoviewModel, navController) }
                 composable("registration") {
                     Log.d("ER_NAV_DEBUG", "Открыт экран регистрации")
                     val context = LocalContext.current.applicationContext
@@ -95,7 +109,13 @@ class MainActivity : ComponentActivity() {
                         viewModel(factory = factory)
 
                     Log.d("NAV_DEBUG", "Открыт экран регистрации")
-                    Registration_screen(registrationViewModel, navController)
+                    Registration_screen(userProfileViewModel, registrationViewModel, navController)
+                }
+                composable("user_profile_screen") {backStackEntry ->
+
+                    //val userviewModel: UserProfileViewModel = viewModel(backStackEntry)
+                    //Log.d("AUTO_USERSCREEN_MODEL_!!", "${userviewModel.currentUser} , ${userviewModel}")
+                    User_profile_screen(userProfileViewModel, navController)
                 }
                 composable("exercises_screen") {
                     val context = LocalContext.current
@@ -108,7 +128,6 @@ class MainActivity : ComponentActivity() {
                         viewModel = viewModel
                     )
                 }
-
             }
         }
     }

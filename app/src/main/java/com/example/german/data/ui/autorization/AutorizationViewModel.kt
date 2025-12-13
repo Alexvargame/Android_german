@@ -10,13 +10,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 import com.example.german.data.AppDatabase
-
+import com.example.german.data.entities.BaseUser
 
 class AutorizationViewModel(private val db: AppDatabase) : ViewModel() {
 
     // Состояние результата логина: true = успешный, false = ошибка, null = ещё не пытались
-    private val _loginResult = mutableStateOf<Boolean?>(null)
-    val loginResult: State<Boolean?> = _loginResult
+    private val _loginResult = mutableStateOf<BaseUser?>(null)
+    val loginResult: State<BaseUser?> = _loginResult
 
     private val _errorMessage = mutableStateOf("")
     val errorMessage: State<String> = _errorMessage
@@ -29,10 +29,10 @@ class AutorizationViewModel(private val db: AppDatabase) : ViewModel() {
             }
             if (user != null) {
                 Log.d("AUTO_VIEWMODEL", "auotriz called with username=$user")
-                _loginResult.value = true
-                _errorMessage.value = ""
+                _loginResult.value = user
+                //_errorMessage.value = ""
             } else {
-                _loginResult.value = false
+                //_loginResult.value = false
                 _errorMessage.value = "Неверный логин или пароль"
             }
         }

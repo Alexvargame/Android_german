@@ -1,14 +1,13 @@
 package com.example.german.data.repository
 
 import com.example.german.data.dao.UserRegistrationDao
-import android.database.sqlite.SQLiteConstraintException
 
 import com.example.german.data.entities.BaseUser
 import android.util.Log
 
 class UserRegistrationRepository(private val UserRegistrationDao: UserRegistrationDao) {
 
-    suspend fun registerUser(email: String, username: String, password: String): Boolean {
+    suspend fun registerUser(email: String, username: String, password: String): BaseUser? {
         val now = System.currentTimeMillis()
         val user = BaseUser(
             email = email,
@@ -37,7 +36,7 @@ class UserRegistrationRepository(private val UserRegistrationDao: UserRegistrati
             Log.d("USER_DATA", "username=${user.username}, email=${user.email}, pass=${user.password}")
             UserRegistrationDao.insertUser(user)
             Log.e("USER_", "after insert")
-            true  // успешно вставили
+            user  // успешно вставили
         } /*catch (e: SQLiteConstraintException) {
             Log.e("USER_", "false")
             false // пользователь с таким email или username уже есть
@@ -45,7 +44,7 @@ class UserRegistrationRepository(private val UserRegistrationDao: UserRegistrati
         catch (e: Exception) {
             Log.e("USER_ERROR", "insert failed: ${e.message}")
             e.printStackTrace()
-            false
+            null
         }
 
     }

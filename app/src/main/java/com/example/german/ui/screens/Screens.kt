@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 
 import com.example.german.data.ui.autorization.AutorizationViewModel
 import com.example.german.data.ui.registration.RegistrationViewModel
+
 import com.example.german.data.AppDatabase
 import com.example.german.data.repository.autorization.AutorizationViewModelFactory
 
@@ -28,22 +29,28 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 
 import androidx.navigation.NavController
+import com.example.german.data.ui.user_profile.UserProfileViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
-fun Start_app_screen(viewModel: AutorizationViewModel, navController: NavController) {
+fun Start_app_screen(userviewModel: UserProfileViewModel,
+                     autoviewModel: AutorizationViewModel,
+                     navController: NavController,) {
 
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val loginResult by autoviewModel.loginResult
+    val errorMessage by autoviewModel.errorMessage
+
     val context = LocalContext.current
 
-    val errorMessage by viewModel.errorMessage
-    val loginResult by viewModel.loginResult
-
-
     LaunchedEffect(loginResult) {
-        if (loginResult == true) {
-            navController.navigate("exercises_screen") {
+        loginResult?.let { user ->
+            userviewModel.setUser(user)   // ← ВОТ ТУТ
+            delay(1)
+            navController.navigate("user_profile_screen") {
                 popUpTo("start_app_screen") { inclusive = true }
             }
         }
@@ -88,7 +95,7 @@ fun Start_app_screen(viewModel: AutorizationViewModel, navController: NavControl
 
         Button(
             onClick = {
-                viewModel.login(login, password)
+                autoviewModel.login(login, password)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -107,7 +114,7 @@ fun Start_app_screen(viewModel: AutorizationViewModel, navController: NavControl
 
 
 @Composable
-fun Registration_screen(viewModel: RegistrationViewModel, navController: NavController  ) {
+fun Registration_screen(userviewModel: UserProfileViewModel, viewModel: RegistrationViewModel, navController: NavController  ) {
     Log.d("TEST_REGISTR", "registraion_screen() started")
     // Подписка на состояние ViewModel
     val registrationResult by viewModel.registrationResult
@@ -117,14 +124,26 @@ fun Registration_screen(viewModel: RegistrationViewModel, navController: NavCont
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    LaunchedEffect(registrationResult) {
+    /*LaunchedEffect(registrationResult.value) {
         if (registrationResult == true) {
+
+
+            newUser?.let { user ->
+                // Записываем пользователя в глобальный UserProfileViewModel
+                userviewModel.setUser(user)
             navController.navigate("exercises_screen") {
                 popUpTo("registration_screen") { inclusive = true }
             }
         }
+    }*/
+    LaunchedEffect(registrationResult) {
+        registrationResult?.let { user ->
+            userviewModel.setUser(user)
+            navController.navigate("user_profile_screen") {
+                popUpTo("registration_screen") { inclusive = true }
+            }
+        }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -193,7 +212,7 @@ fun Registration_screen(viewModel: RegistrationViewModel, navController: NavCont
         Spacer(Modifier.height(12.dp))
 
         // Показываем ошибку, если регистрация не удалась
-        if (registrationResult == false) {
+        if (registrationResult == null) {
             Text(
                 errorMessage,
                 color = Color.Red,

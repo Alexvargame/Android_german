@@ -9,11 +9,11 @@ import android.database.sqlite.SQLiteConstraintException
 
 import android.util.Log
 
-
+import com.example.german.data.entities.BaseUser
 class RegistrationViewModel(private val repo: UserRegistrationRepository) : ViewModel() {
 
 
-    var registrationResult = mutableStateOf<Boolean?>(null)
+    var registrationResult = mutableStateOf<BaseUser?>(null)
         private set
     var errorMessage = mutableStateOf("")
         private set
@@ -22,19 +22,19 @@ class RegistrationViewModel(private val repo: UserRegistrationRepository) : View
         viewModelScope.launch {
             Log.d("REG_VIEWMODEL", "registerUser called with username=$username")
             try {
-                val success = repo.registerUser(email, username, password) // EMAIL  <- Repository создаёт BaseUser
-                registrationResult.value = success
-                Log.d("REG_VIEWMODEL", "registerUser success=$success")
+                val newUser = repo.registerUser(email, username, password) // EMAIL  <- Repository создаёт BaseUser
+                registrationResult.value = newUser
+                Log.d("REG_VIEWMODEL", "registerUser success=$newUser")
 
-                if (success) {
-                    registrationResult.value = true
+                if (newUser != null) {
+                    registrationResult.value = newUser
                     errorMessage.value = ""
                 } else {
-                    registrationResult.value = false
+                    registrationResult.value = null
                     errorMessage.value = "Пользователь с таким email или логином уже существует"
                 }
             } catch (e: SQLiteConstraintException) {
-                registrationResult.value = false
+                registrationResult.value = null
                 errorMessage.value = "Пользователь с таким email или логином уже существует"
                 Log.e("REG_VIEWMODEL", "SQLiteConstraintException", e)
             }
