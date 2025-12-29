@@ -1,4 +1,5 @@
 
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -29,6 +30,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
     }
     compileOptions {
@@ -40,6 +42,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    sourceSets["main"].assets.srcDirs("src/main/assets")
+    androidResources {
+        noCompress += "db"
     }
 }
 

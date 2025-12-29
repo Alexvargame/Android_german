@@ -17,13 +17,13 @@ class Add_word_types(private val context: Context) {
 
 
         val db = AppDatabase.getInstance(context)
-        Log.d("TEST_DB", "DB path: ${context.getDatabasePath("app_database_name.db")}")
+        //Log.d("TEST_DB", "DB path: ${context.getDatabasePath("app_database_name.db")}")
         val wordTypeDao = db.wordTypeDao()
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("TEST_DB", "testAllWordRelatedTables() started")
 
 
-            val word_type1 = WordType(
+            /*val word_type1 = WordType(
                 name = "Noun",
                 description = "Существительное",
             )
@@ -59,10 +59,10 @@ class Add_word_types(private val context: Context) {
             )
             wordTypeDao.insert(word_type6)
             Log.d("WordTp6", "Новая  Art6 вставлен")
-
+            */
             val wordtypes = wordTypeDao.getAll()
             wordtypes.forEach {
-                Log.d("TEST_DB", "USER_ROLE: ${it.name} / ${it.description}/ ${it.id}")
+                Log.d("TEST_DB", "WORD_TYEP: ${it.name} / ${it.description}/ ${it.id}")
             }
         }
     }

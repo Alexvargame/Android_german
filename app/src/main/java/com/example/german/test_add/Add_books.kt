@@ -11,13 +11,14 @@ import kotlinx.coroutines.launch
 class Add_books(private val context: Context) {
 
     fun addbooks() {
+
         Log.d("TEST_DB", " Context ${context}")
-        AppDatabase.resetInstance()
-        context.deleteDatabase("app_database_name.db")
+        //AppDatabase.resetInstance()
+        //context.deleteDatabase("app_database_name.db")
 
 
         val db = AppDatabase.getInstance(context)
-        Log.d("TEST_DB", "DB path: ${context.getDatabasePath("app_database_name.db")}")
+        //Log.d("TEST_DB", "DB path: ${context.getDatabasePath("app_database_name.db")}")
         val bookDao = db.bookDao()
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("TEST_DB", "testAllWordRelatedTables() started")

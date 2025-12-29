@@ -25,6 +25,8 @@ import com.example.german.ui.navigation.exercises.pronouns.exercisesPronounEnter
 import com.example.german.ui.navigation.exercises.pronouns.exercisesPronounEnterResultNavGraph
 import com.example.german.ui.navigation.exercises.pronouns.exercisesPronounButtonNavGraph
 import com.example.german.ui.navigation.exercises.pronouns.exercisesPronounButtonResultNavGraph
+import com.example.german.ui.navigation.backUpNavGraph
+import com.example.german.ui.navigation.exercises.adjective.exercisesAdjectiveNavGraph
 
 import com.example.german.ui.screens.HomeScreen
 
@@ -116,6 +118,13 @@ fun appNavGraph(navController: NavHostController, userProfileViewModel: UserProf
             userProfileViewModel = userProfileViewModel,
         )
         exercisesPronounButtonResultNavGraph(
+            navController = navController,
+            userProfileViewModel = userProfileViewModel,
+        )
+        backUpNavGraph(
+            navController = navController,
+        )
+        exercisesAdjectiveNavGraph(
             navController = navController,
             userProfileViewModel = userProfileViewModel,
         )

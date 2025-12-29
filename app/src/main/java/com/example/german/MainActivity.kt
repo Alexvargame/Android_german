@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.util.Calendar
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -15,8 +16,11 @@ import java.io.File
 
 
 
-
+import com.example.german.data.AppDatabase
+import com.example.german.data.dao.BaseUserDao
 import com.example.german.data.ui.viewModel.user_profile.UserProfileViewModel
+import com.example.german.data.repository.user_profile.UserProfileViewModelFactory
+
 import com.example.german.test_add.Read_users
 import com.example.german.ui.navigation.appNavGraph
 
@@ -30,18 +34,18 @@ class MainActivity : ComponentActivity() {
         //TestDb_words(this).testAllWordRelatedTables()
         //TestDb_users_roles(this).testusersroles()
         //TestDb_messages(this).testmessages()
-        //Add_users_roles(this).addusersroles()
-        Read_users(this).readusers()
-        //Add_word_types(this).addwordtypes()
-        //Add_books(this).addbooks()
+       // Add_users_roles(this).addusersroles()
+        //Read_users(this).readusers()
+       // Add_word_types(this).addwordtypes()
+       // Add_books(this).addbooks()
         //Add_lections(this).addlections()
         //Add_articles(this).addarticles()
-        //TestInsertWord(this).testInsertWord()
+       // TestInsertWord(this).testInsertWord()
         //TestInsertWordBVerb(this).testInsertWord()
         //TestInsertWordBAdjective(this).testInsertWord()
         //TestInsertNumeral(this).insertOneNumeral()
         //TestInsertPronoun(this).insertPronoun()
-        //TestInsertOtherWordl(this).insertOtherWord()
+        //TestInsertOtherWord(this).insertOtherWord()
         //val source = "/data/data/com.your.package.name/databases/app.db"
         //val destination = "/storage/emulated/0/Download/app_backup.db" // Пример пути к скачиваемым файлам
         //copyDatabaseFile(source, destination)
@@ -52,10 +56,19 @@ class MainActivity : ComponentActivity() {
         } else {
             "Добрый вечер"
         }
+        //DatabaseInstaller.installIfNeeded(this, "app_main.db")
         setContent {
+            val context = LocalContext.current
+            val db = AppDatabase.getInstance(context)
+            val userDao = db.baseUserDao()
+
+            val userProfileViewModel: UserProfileViewModel = viewModel(
+                factory = UserProfileViewModelFactory(userDao)
+            )
+            Log.e("USER_after", "${userProfileViewModel}")
             val navController = rememberNavController()
 
-            val userProfileViewModel: UserProfileViewModel = viewModel()   // Пробуем создать профиль для всех экранов
+            //val userProfileViewModel: UserProfileViewModel = viewModel()   // Пробуем создать профиль для всех экранов
             appNavGraph(navController, userProfileViewModel, greetingText)
 
         }

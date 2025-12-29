@@ -6,7 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.german.data.dao.*
 import com.example.german.data.entities.*
+import android.util.Log
 
+import androidx.sqlite.db.SupportSQLiteDatabase
 @Database(
     entities = [
         Book::class,
@@ -54,13 +56,16 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
+
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app.db"
                 )
                     // Если используешь готовую базу из assets
-                    //.createFromAsset("old_database.db")
+
+                    .createFromAsset("databases/app.db")
+
                     .build()
                 INSTANCE = instance
                 instance

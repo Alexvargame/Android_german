@@ -20,14 +20,14 @@ class TestInsertWordBAdjective(private val context: Context) {
             val db = AppDatabase.Companion.getInstance(context)
             val wordDao = db.wordDao()
 
-           val wordId = wordDao.insert(
+           /*val wordId = wordDao.insert(
                 Word(
                     lectionId = 1,//lectionId,      // ← СУЩЕСТВУЮЩИЙ
                     wordTypeId = 3//nounTypeId     // ← WordType "Noun"
                 )
-            )
+            )*/
             val adjectiveDao = db.adjectiveDao()
-            Log.d("STEP1", "Inserted Word id = $wordId")
+           // Log.d("STEP1", "Inserted Word id = $wordId")
 
             val gson = Gson()
 

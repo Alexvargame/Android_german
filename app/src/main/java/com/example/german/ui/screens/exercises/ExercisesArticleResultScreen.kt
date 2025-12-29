@@ -1,5 +1,6 @@
 package com.example.german.ui.screens.exercises
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 
 import androidx.compose.foundation.layout.*
@@ -26,7 +27,9 @@ fun ExerciseArticleResultScreen(
     userProfileViewModel: UserProfileViewModel
 ) {
     val user = userProfileViewModel.currentUser.value
-
+    Log.d("USER_SCXREEN_RESULT","setUser -> ${user}")
+    Log.d("USER_correct_RESULT","setUser -> ${correctCount}")
+    Log.d("USER_toalt_RESULT","setUser -> ${totalQuestions}")
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,

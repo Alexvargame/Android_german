@@ -4,11 +4,16 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.LiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import com.example.german.data.AppDatabase
 import com.example.german.data.entities.BaseUser
+import com.example.german.data.dao.BaseUserDao
 
-class UserProfileViewModel : ViewModel() {
+class UserProfileViewModel ( private val userDao: BaseUserDao): ViewModel() {
 
     private val _currentUser = mutableStateOf<BaseUser?>(null)
     val currentUser: State<BaseUser?> = _currentUser
@@ -29,10 +34,15 @@ class UserProfileViewModel : ViewModel() {
         return _currentUser.value != null
     }
     fun decreaseLife() {
+        Log.d("USER_DECREASE","setUser -> ")
         currentUser.value?.let { user ->
             val lifes = user.lifes ?: 0
             if (lifes > 0) {
-                _currentUser.value = user.copy(lifes = lifes - 1)
+                Log.d("USER_DECREASE_USER","setUser -> ${user}")
+                val updatedUser = user.copy(lifes = lifes - 1)
+                Log.d("USER_DECREASE_LIFES","setUser -> ${updatedUser}")
+                _currentUser.value = updatedUser//user.copy(lifes = lifes - 1)
+                saveCurrentUser()
             }
         }
     }
@@ -40,7 +50,29 @@ class UserProfileViewModel : ViewModel() {
     fun addScore(points: Int) {
         currentUser.value?.let { user ->
             val score = user.score ?: 0
-            _currentUser.value = user.copy(score = score + points)
+            Log.d("USER_ADDCORE_USER","setUser -> ${user}")
+            val updatedUser = user.copy(score = score + points)
+            Log.d("USER_ADDCORE_LIFES","setUser -> ${updatedUser}")
+            _currentUser.value = updatedUser //user.copy(score = score + points)
+            saveCurrentUser()
+        }
+    }
+    private fun saveCurrentUser() {
+        currentUser.value?.let { user ->
+            viewModelScope.launch {
+                try {
+                    userDao.update(user)
+                    Log.d("USER_DB_SAVE", "User saved: $user")
+                } catch (e: Exception) {
+                    Log.e("USER_DB_SAVE", "Error saving user", e)
+                }
+            }
+        }
+    }
+
+    private fun saveUserToDatabase(user: BaseUser) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userDao.insert(user)  // Сохраняем или обновляем пользователя в базе
         }
     }
 }

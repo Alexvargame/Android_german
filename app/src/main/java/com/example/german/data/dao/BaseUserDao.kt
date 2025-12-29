@@ -11,7 +11,7 @@ import com.example.german.data.entities.BaseUser
 interface BaseUserDao {
 
     @Insert
-    suspend fun insert(user: BaseUser)
+    suspend fun insert(user: BaseUser):Long
 
     @Insert
     suspend fun insertAll(users: List<BaseUser>)

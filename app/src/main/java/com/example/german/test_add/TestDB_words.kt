@@ -25,7 +25,7 @@ class TestDb_words(private val context: Context) {
     fun testAllWordRelatedTables() {
         Log.d("TEST_DB", "${context}")
         val db = AppDatabase.getInstance(context)
-        Log.d("TEST_DB", "DB path: ${context.getDatabasePath("app_database_name.db")}")
+       // Log.d("TEST_DB", "DB path: ${context.getDatabasePath("app_database_name.db")}")
         val wordDao = db.wordDao()
         val articleDao = db.articleDao()
         val verbDao = db.verbDao()

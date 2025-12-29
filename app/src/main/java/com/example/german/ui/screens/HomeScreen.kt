@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.navigation.compose.composable
 import com.example.german.GreetingButton
 
 
@@ -54,6 +55,11 @@ fun HomeScreen(navController: NavController, greetingText: String) {
                     onClick = {
                         Log.d("REG_SCREEN", "Нажата кнопка Регистрация")
                         navController.navigate("registration")
+                    })
+                Spacer(modifier = Modifier.height(16.dp))
+                GreetingButton(text = "Back Up",
+                    onClick = {
+                        navController.navigate("back_up_screen")
                     })
                 Spacer(modifier = Modifier.height(16.dp))
                 GreetingButton(text = "Очень жаль",

@@ -50,7 +50,8 @@ fun ExerciseArticleScreen(
     val user = userProfileViewModel.currentUser.value
     val exercises = viewModel.exercises
 
-
+    Log.e("USER_after_screen", "${userProfileViewModel}")
+    Log.e("USER_user", "${user}")
 
     Column(
         modifier = Modifier
@@ -128,8 +129,9 @@ fun ExerciseArticleScreen(
                 if (result.wrongCount > 0) {
                     userProfileViewModel.decreaseLife()
                 }
+                Log.d("USER_SCXREEN_DECREASE","setUser -> ${user}")
                 userProfileViewModel.addScore(result.correctCount)
-
+                Log.d("USER_SCREEN_LIFES","setUser -> ${user}")
                 // 3️⃣ Навигация на экран результатов
                 navController.navigate(
                     "exercise_article_result_screen/${result.correctCount}/${result.totalQuestions}"

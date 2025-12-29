@@ -26,7 +26,7 @@ class TestInsertWordBVerb(private val context: Context) {
             val verbDao = db.verbDao()
             Log.d("STEP1", "Inserted Word id = $wordId")
 
-            /*val verbs = listOf(
+            val verbs = listOf(
                 Verb(
                     wordPtrId = wordDao.insert(Word(lectionId = 1, wordTypeId = 2)),
                     word = "gehen",
@@ -109,7 +109,7 @@ class TestInsertWordBVerb(private val context: Context) {
                 verbDao.insert(verb)
                 Log.d("STEP2", "Inserted Verb: ${verb.word}")
             }
-            */
+
             val moreVerbs = listOf(
                 Verb(
                     wordPtrId = wordDao.insert(Word(lectionId = 1, wordTypeId = 2)),

@@ -8,16 +8,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.google.gson.Gson
 
+import com.example.german.data.entities.Article
+
 class Add_articles(private val context: Context) {
 
     fun addarticles() {
         Log.d("TEST_DB", " Context ${context}")
-        AppDatabase.resetInstance()
-        context.deleteDatabase("app_database_name.db")
+        //AppDatabase.resetInstance()
+        //context.deleteDatabase("app_database_name.db")
 
 
         val db = AppDatabase.getInstance(context)
-        Log.d("TEST_DB_ARTICLE", "DB path: ${context.getDatabasePath("app_database_name.db")}")
+        //Log.d("TEST_DB_ARTICLE", "DB path: ${context.getDatabasePath("app_database_name.db")}")
         val articleDao = db.articleDao()
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("TEST_DB", "testAllWordRelatedTables() started")
@@ -27,7 +29,7 @@ class Add_articles(private val context: Context) {
             val formsMap = mapOf("akk" to "den", "dat" to "dem", "gen" to "des")
             val formsJson = gson.toJson(formsMap)
 
-            /*val article1 = Article(
+            val article1 = Article(
                 name = "der",
                 description = "Мужской",
                 forms = formsJson
@@ -72,7 +74,7 @@ class Add_articles(private val context: Context) {
             )
             articleDao.insert(article4)
             Log.d("Article4", "Новая  Art4 вставлен")
-            */
+
             val articles = articleDao.getAll()
             articles.forEach {
                 Log.d("ARTICLE_DB", "USER_ROLE: ${it.name} / ${it.description}/ ${it.id}")
