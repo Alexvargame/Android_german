@@ -34,7 +34,7 @@ interface BaseUserDao {
         AND password = :password 
         LIMIT 1
     """)
-    fun getUser(loginOrEmail: String, password: String): BaseUser?
+    suspend fun getUser(loginOrEmail: String, password: String): BaseUser?
 
     @Update
     suspend fun update(user: BaseUser)

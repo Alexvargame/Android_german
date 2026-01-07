@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 
 import com.example.german.data.AppDatabase
 import com.example.german.data.ui.viewModel.autorization.AutorizationViewModel
+import com.example.german.data.datastore.AuthDataStore
 
 
 

@@ -69,12 +69,11 @@ fun BackUpscreen(
         }
         Button (
             onClick = {
-                (context as? Activity)?.finish()
-                       },
+                navController.navigate("home")
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Выйти")
+            Text("На главную")
         }
-
     }
 }

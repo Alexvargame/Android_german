@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 
 import com.example.german.data.ui.viewModel.autorization.AutorizationViewModel
 import com.example.german.data.ui.viewModel.registration.RegistrationViewModel
+import com.example.german.data.entities.BaseUser
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
@@ -36,20 +37,55 @@ fun Start_app_screen(userviewModel: UserProfileViewModel,
 
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val isUserLoggedIn = autoviewModel.checkUserLoggedIn(context)
+    Log.d("AUTO_VIEWMODEL_CHECK", "isUserLoggedIn = $isUserLoggedIn")
 
-    val loginResult by autoviewModel.loginResult
+
+    if (isUserLoggedIn) {
+        Log.d("AUTO_VIEWMODEL_CHECK", "Попытка автологина")
+        val userIdString: String? = autoviewModel.getLoggedInUserId(context)
+        val userId: Long? = userIdString?.toLongOrNull()
+
+        if (userId != null) {
+            try {
+                Log.d("AUTO_VIEWMODEL_CHECK", "Вызываем loadUserById для userId = $userId")
+                userviewModel.loadUserById(userId) // Unit
+                Log.d("AUTO_VIEWMODEL_CHECK", "loadUserById вызван")
+            } catch (e: Exception) {
+                Log.e("AUTO_VIEWMODEL_CHECK", "Ошибка loadUserById", e)
+            }
+        } else {
+            Log.d("AUTO_VIEWMODEL_CHECK", "userId null, не восстанавливаем")
+        }
+    } else {
+        Log.d("AUTO_VIEWMODEL_CHECK", "Пользователь не авторизован, ждем ручного входа")
+    }
+
+    Log.d("AUTO_LOGIN", "После проверки авторизации")
+
+    // Подписка на пользователя (или loginResult для ручного входа)
+    val loginResult by if (isUserLoggedIn) {
+        Log.d("AUTO_VIEWMODEL_CHECK", "Подписываемся на userviewModel.currentUser")
+        userviewModel.currentUser
+    } else {
+        Log.d("AUTO_VIEWMODEL_CHECK", "Подписываемся на autoviewModel.loginResult")
+        autoviewModel.loginResult
+    }
+
     val errorMessage by autoviewModel.errorMessage
 
-    val context = LocalContext.current
-
+    // LaunchedEffect реагирует на появление пользователя
     LaunchedEffect(loginResult) {
         loginResult?.let { user ->
-            userviewModel.setUser(user)   // ← ВОТ ТУТ
+            Log.d("AUTO_VIEWMODEL_CHECK", "loginResult не null, устанавливаем пользователя: $user")
+            userviewModel.setUser(user)
             delay(1)
+            Log.d("AUTO_VIEWMODEL_CHECK", "Переходим на user_profile_screen")
             navController.navigate("user_profile_screen") {
                 popUpTo("start_app_screen") { inclusive = true }
             }
-        }
+        } ?: Log.d("AUTO_VIEWMODEL_CHECK", "loginResult null, ничего не делаем")
     }
 
     Column(
@@ -91,7 +127,7 @@ fun Start_app_screen(userviewModel: UserProfileViewModel,
 
         Button(
             onClick = {
-                autoviewModel.login(login, password)
+                autoviewModel.login(context,login, password)
             },
             modifier = Modifier.fillMaxWidth()
         ) {

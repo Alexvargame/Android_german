@@ -16,7 +16,7 @@ import com.example.german.data.repository.autorization.AutorizationViewModelFact
 
 import com.example.german.data.ui.viewModel.registration.RegistrationViewModel
 import com.example.german.data.ui.viewModel.user_profile.UserProfileViewModel
-
+import com.example.german.data.datastore.AuthDataStore
 import com.example.german.ui.screens.Registration_screen
 import com.example.german.ui.screens.Start_app_screen
 

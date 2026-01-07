@@ -1,6 +1,5 @@
 package com.example.german.ui.screens
 
-import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -10,10 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
-import com.example.german.test_add.DatabaseBackup
-
-import com.example.german.data.AppDatabase
-import java.io.File
 
 
 import androidx.compose.material3.Text
@@ -79,22 +74,13 @@ fun User_profile_screen(
             Text("ЧТО ТО")
         }
 
-
         Button (
             onClick = {
-                navController.popBackStack()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Назад")
-        }
-        Button (
-            onClick = {
-                (context as? Activity)?.finish()
+                navController.navigate("home")
                        },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Выйти")
+            Text("На главную")
         }
 
     }

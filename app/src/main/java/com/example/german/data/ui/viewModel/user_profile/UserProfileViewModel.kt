@@ -27,10 +27,12 @@ class UserProfileViewModel ( private val userDao: BaseUserDao): ViewModel() {
     }
 
     fun logout() {
+        Log.d("AUTO_USERMODEL","LOGOUT_USER")
         _currentUser.value = null
     }
 
     fun isAuthorized(): Boolean {
+        Log.d("AUTO_RISED","${_currentUser.value}")
         return _currentUser.value != null
     }
     fun decreaseLife() {
@@ -73,6 +75,20 @@ class UserProfileViewModel ( private val userDao: BaseUserDao): ViewModel() {
     private fun saveUserToDatabase(user: BaseUser) {
         viewModelScope.launch(Dispatchers.IO) {
             userDao.insert(user)  // Сохраняем или обновляем пользователя в базе
+        }
+    }
+    fun loadUserById(userId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val userFromDb = userDao.getById(userId)
+                userFromDb?.let {
+                    // Перекладываем в main thread, чтобы Compose увидел изменения
+                    _currentUser.value = it
+                    Log.d("AUTO_USERMODEL","loadUserById -> $it")
+                }
+            } catch (e: Exception) {
+                Log.e("AUTO_USERMODEL", "Error loading user by ID", e)
+            }
         }
     }
 }

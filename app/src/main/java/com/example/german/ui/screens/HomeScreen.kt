@@ -2,6 +2,8 @@ package com.example.german.ui.screens
 
 import android.app.Activity
 import android.util.Log
+
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -14,15 +16,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.composable
 import com.example.german.GreetingButton
 
+import com.example.german.data.ui.viewModel.autorization.AutorizationViewModel
+import com.example.german.data.ui.viewModel.user_profile.UserProfileViewModel
+import com.example.german.data.repository.autorization.AutorizationViewModelFactory
+import com.example.german.data.repository.user_profile.UserProfileViewModelFactory
+import com.example.german.data.AppDatabase
 
 @Composable
 fun HomeScreen(navController: NavController, greetingText: String) {
     // state переменная
     val context = LocalContext.current
+
     var textHello by remember { mutableStateOf("$greetingText,\nхотите знать немецкий?") }
+    val autoviewModel: AutorizationViewModel = viewModel(
+        factory = AutorizationViewModelFactory(
+            AppDatabase.getInstance(context)
+        )
+    )
+    val userDao = AppDatabase.getInstance(context).baseUserDao()
+    val userviewModel: UserProfileViewModel = viewModel(
+        factory = UserProfileViewModelFactory(userDao)
+    )
+
 
     androidx.compose.material3.MaterialTheme {  // ← ДОБАВЛЕНО
         Column(
@@ -50,6 +69,7 @@ fun HomeScreen(navController: NavController, greetingText: String) {
             ){
                 GreetingButton( text = "Войти",
                     onClick = { navController.navigate("start_app") })
+
                 Spacer(modifier = Modifier.height(16.dp))
                 GreetingButton( text = "Зарегистрироваться",
                     onClick = {
@@ -62,8 +82,31 @@ fun HomeScreen(navController: NavController, greetingText: String) {
                         navController.navigate("back_up_screen")
                     })
                 Spacer(modifier = Modifier.height(16.dp))
-                GreetingButton(text = "Очень жаль",
-                    onClick = {(context as? Activity)?.finish()})
+                if (autoviewModel.checkUserLoggedIn(context)) {
+                    GreetingButton(
+                        text = "Выйти",
+                        onClick = {
+                            (context as? Activity)?.finish()
+                        }
+                    )
+                }
+                //GreetingButton(text = "Выйти",
+                  //  onClick = {(context as? Activity)?.finish()})
+                Spacer(modifier = Modifier.height(16.dp))
+                GreetingButton(
+                    text = if (autoviewModel.checkUserLoggedIn(context)) "Разлогиниться" else "Выйти",
+                    onClick = {
+                        if (autoviewModel.checkUserLoggedIn(context)) {
+                            autoviewModel.logout(context)
+                            userviewModel.logout()
+                            navController.navigate("home")
+                        }
+                        else
+                        (context as? Activity)?.finish()
+                    }
+                )
+                //GreetingButton(text = "Очень жаль",
+                  //  onClick = {(context as? Activity)?.finish()})
             }
         }
     }

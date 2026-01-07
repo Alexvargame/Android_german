@@ -45,6 +45,7 @@ fun appNavGraph(navController: NavHostController, userProfileViewModel: UserProf
         startDestination = "home"
     ) {
         composable("home") {
+
             HomeScreen(navController = navController, greetingText = greetingText)
         }
         authRegNavGraph(
